@@ -87,10 +87,10 @@
 
   <div class="area-principal">
     <div class="painel">
-      <label for="imagem">📷 Enviar imagem do convite:</label>
+      <label>📷 Enviar imagem do convite:</label>
       <input type="file" id="imagem" accept="image/*" />
 
-      <label for="musica">🎵 Enviar música do convite:</label>
+      <label>🎵 Enviar música do convite:</label>
       <input type="file" id="musica" accept="audio/*" />
     </div>
 
@@ -103,7 +103,7 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase e lógica -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
@@ -120,33 +120,32 @@
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
 
-    const imagemInput = document.getElementById('imagem');
-    const musicaInput = document.getElementById('musica');
-    const imgPreview = document.getElementById('imgPreview');
-    const audioPreview = document.getElementById('audioPreview');
+    const imagemInput = document.getElementById("imagem");
+    const musicaInput = document.getElementById("musica");
+    const imgPreview = document.getElementById("imgPreview");
+    const audioPreview = document.getElementById("audioPreview");
 
-    imagemInput.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const storageRef = ref(storage, `convites/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      imgPreview.src = url;
-      imgPreview.style.display = 'block';
+    imagemInput.addEventListener("change", async function () {
+      const file = imagemInput.files[0];
+      if (file) {
+        const storageRef = ref(storage, `convites/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        imgPreview.src = url;
+        imgPreview.style.display = "block";
+      }
     });
 
-    musicaInput.addEventListener('change', async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const storageRef = ref(storage, `musicas/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      audioPreview.src = url;
-      audioPreview.style.display = 'block';
+    musicaInput.addEventListener("change", async function () {
+      const file = musicaInput.files[0];
+      if (file) {
+        const storageRef = ref(storage, `convites/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
+        audioPreview.src = url;
+        audioPreview.style.display = "block";
+      }
     });
   </script>
-
 </body>
 </html>
