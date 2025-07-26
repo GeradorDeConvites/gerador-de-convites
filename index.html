@@ -4,8 +4,149 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gerador de Convites</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background-color: #f8f0f5;
+    }
+
+    h1 {
+      color: #d57ca6;
+      text-align: center;
+    }
+
+    .area-principal {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+
+    .painel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 300px;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      border: 2px dashed #ccc;
+      background: white;
+      cursor: pointer;
+    }
+
+    #preview {
+      text-align: center;
+      max-width: 300px;
+    }
+
+    #preview h2 {
+      margin-bottom: 15px;
+    }
+
+    .preview-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #audioPreview {
+      width: 100%;
+      display: none;
+    }
+
+    .convite-preview {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .area-principal {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .painel, #preview {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Olá, Madu! Aqui começa o sistema ✨</h1>
+
+  <h1>🎉 Gerador de Convites</h1>
+
+  <div class="area-principal">
+    <div class="painel">
+      <label for="imagem">📷 Enviar imagem do convite:</label>
+      <input type="file" id="imagem" accept="image/*" />
+
+      <label for="musica">🎵 Enviar música do convite:</label>
+      <input type="file" id="musica" accept="audio/*" />
+    </div>
+
+    <div id="preview">
+      <h2>Pré-visualização:</h2>
+      <div class="preview-wrapper">
+        <audio id="audioPreview" controls></audio>
+        <img id="imgPreview" class="convite-preview" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEmQcqVMWPxCePo5Lckik8jroLd_7IbuI",
+      authDomain: "gerador-de-convites.firebaseapp.com",
+      projectId: "gerador-de-convites",
+      storageBucket: "gerador-de-convites.appspot.com",
+      messagingSenderId: "473897728827",
+      appId: "1:473897728827:web:ef6ad6244657020262d51e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    const imagemInput = document.getElementById('imagem');
+    const musicaInput = document.getElementById('musica');
+    const imgPreview = document.getElementById('imgPreview');
+    const audioPreview = document.getElementById('audioPreview');
+
+    imagemInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const storageRef = ref(storage, `convites/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      imgPreview.src = url;
+      imgPreview.style.display = 'block';
+    });
+
+    musicaInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const storageRef = ref(storage, `musicas/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      audioPreview.src = url;
+      audioPreview.style.display = 'block';
+    });
+  </script>
+
 </body>
 </html>
