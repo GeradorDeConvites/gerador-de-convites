@@ -103,10 +103,12 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
 
+  <!-- Script principal -->
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyDEmQcqVMWPxCePo5Lckik8jroLd_7IbuI",
       authDomain: "gerador-de-convites.firebaseapp.com",
@@ -116,8 +118,8 @@
       appId: "1:473897728827:web:ef6ad6244657020262d51e"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const storage = getStorage(app);
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
 
     const imagemInput = document.getElementById("imagemInput");
     const musicaInput = document.getElementById("musicaInput");
@@ -128,9 +130,9 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      const storageRef = ref(storage, `convites/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
+      const storageRef = storage.ref(`convites/${file.name}`);
+      await storageRef.put(file);
+      const url = await storageRef.getDownloadURL();
 
       imgPreview.src = url;
       imgPreview.style.display = "block";
@@ -140,9 +142,9 @@
       const file = event.target.files[0];
       if (!file) return;
 
-      const storageRef = ref(storage, `convites/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
+      const storageRef = storage.ref(`convites/${file.name}`);
+      await storageRef.put(file);
+      const url = await storageRef.getDownloadURL();
 
       audioPreview.src = url;
       audioPreview.style.display = "block";
